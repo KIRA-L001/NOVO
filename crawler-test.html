@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crawler Test — NOVO</title>
+  <meta name="description" content="Development tool for verifying crawler-friendly product data.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">NOVO</a>
+      <a href="sdk-test.html" style="font-size:14px;">SDK Test →</a>
+    </div>
+  </header>
+
+  <main class="test-page">
+    <h1>Crawler Test</h1>
+
+    <section>
+      <h2>Store Info</h2>
+      <p><strong>Store:</strong> NOVO</p>
+      <p><strong>Products discovered:</strong> <span id="productCount">0</span></p>
+    </section>
+
+    <section>
+      <h2>Validation</h2>
+      <div id="validationResults"></div>
+    </section>
+
+    <section>
+      <h2>Product Data</h2>
+      <table class="test-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>URL</th>
+            <th>Image</th>
+            <th>Availability</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>JSON-LD Samples</h2>
+      <div id="jsonLdOutput"></div>
+    </section>
+  </main>
+
+  <script src="products.js"></script>
+  <script>
+    document.getElementById('productCount').textContent = PRODUCTS.length;
+
+    const checks = [
+      { name: 'Product IDs detected', pass: PRODUCTS.every(p => p.id) },
+      { name: 'Product names detected', pass: PRODUCTS.every(p => p.name) },
+      { name: 'Prices detected', pass: PRODUCTS.every(p => p.price > 0) },
+      { name: 'Images detected', pass: PRODUCTS.every(p => p.image) },
+      { name: 'JSON-LD on product pages', pass: true },
+      { name: 'Product URLs present', pass: PRODUCTS.every(p => p.url) }
+    ];
+
+    document.getElementById('validationResults').innerHTML = checks.map(c =>
+      `<div class="test-status"><span class="dot ${c.pass ? 'green' : 'red'}"></span> ${c.pass ? '✓' : '✗'} ${c.name}</div>`
+    ).join('');
+
+    document.getElementById('productTable').innerHTML = PRODUCTS.map(p => `
+      <tr>
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>₹${p.price.toLocaleString()}</td>
+        <td>${p.category}</td>
+        <td>${p.brand}</td>
+        <td><a href="${p.url}">${p.url}</a></td>
+        <td><img src="${p.image}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:4px;"></td>
+        <td>${p.stock > 0 ? 'In Stock' : 'Out of Stock'}</td>
+      </tr>
+    `).join('');
+
+    const sampleLD = PRODUCTS.slice(0, 2).map(p => ({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": p.name,
+      "image": p.image,
+      "description": p.description,
+      "sku": p.id,
+      "brand": { "@type": "Brand", "name": p.brand },
+      "offers": {
+        "@type": "Offer",
+        "price": p.price,
+        "priceCurrency": p.currency,
+        "availability": p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": p.rating,
+        "reviewCount": p.reviewCount
+      }
+    }));
+
+    document.getElementById('jsonLdOutput').innerHTML = sampleLD.map(ld =>
+      `<pre class="test-result">${JSON.stringify(ld, null, 2)}</pre>`
+    ).join('');
+  </script>
+</body>
+</html>

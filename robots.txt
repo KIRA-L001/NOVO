@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /crawler-test.html
+Disallow: /sdk-test.html
+
+Sitemap: https://novo-demo-store.example.com/sitemap.xml

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDK Test — NOVO</title>
+  <meta name="description" content="Development tool for verifying RAY SDK integration.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">NOVO</a>
+      <a href="crawler-test.html" style="font-size:14px;">← Crawler Test</a>
+    </div>
+  </header>
+
+  <main class="test-page">
+    <h1>RAY SDK Status</h1>
+
+    <section>
+      <h2>Integration Status</h2>
+      <div id="statusChecks"></div>
+    </section>
+
+    <section>
+      <h2>Test Actions</h2>
+      <button class="test-btn" onclick="testSearch()">Test Product Search</button>
+      <button class="test-btn" onclick="testGetProduct()">Test Get Product</button>
+      <button class="test-btn" onclick="testAddToCart()">Test Add to Cart</button>
+      <button class="test-btn" onclick="testGetCart()">Test Get Cart</button>
+      <button class="test-btn" onclick="testOpenRAY()">Test Open RAY</button>
+      <div id="testOutput" class="test-result" style="display:none;"></div>
+    </section>
+
+    <section>
+      <h2>Store Context</h2>
+      <div id="storeContext"></div>
+    </section>
+  </main>
+
+  <script src="products.js"></script>
+  <script src="services/product-service.js"></script>
+  <script src="services/cart-service.js"></script>
+  <script src="services/analytics-service.js"></script>
+  <script src="ray-integration.js"></script>
+  <script>
+    function checkStatus() {
+      const checks = [
+        { name: 'SDK Loaded', pass: typeof window.RAY !== 'undefined' },
+        { name: 'Store Connected', pass: typeof window.RAY_STORE !== 'undefined' },
+        { name: 'Catalog Available', pass: typeof window.RAY_STORE?.searchProducts === 'function' },
+        { name: 'Cart API Available', pass: typeof window.RAY_STORE?.addToCart === 'function' },
+        { name: 'Product Context Available', pass: typeof window.RAY_STORE?.getCurrentPage === 'function' }
+      ];
+
+      document.getElementById('statusChecks').innerHTML = checks.map(c =>
+        `<div class="test-status"><span class="dot ${c.pass ? 'green' : 'red'}"></span> ${c.pass ? '●' : '○'} ${c.name}</div>`
+      ).join('');
+
+      if (window.RAY_STORE) {
+        const ctx = {
+          page: window.RAY_STORE.getCurrentPage(),
+          product: window.RAY_STORE.getCurrentProduct(),
+          products: window.RAY_STORE.getVisibleProducts().length,
+          cart: window.RAY_STORE.getCartItems().length
+        };
+        document.getElementById('storeContext').innerHTML =
+          `<pre class="test-result">${JSON.stringify(ctx, null, 2)}</pre>`;
+      }
+    }
+
+    function showOutput(text) {
+      const el = document.getElementById('testOutput');
+      el.style.display = 'block';
+      el.textContent = text;
+    }
+
+    function testSearch() {
+      const results = window.RAY_STORE.searchProducts('running');
+      showOutput('Search "running": ' + results.length + ' results\n' +
+        results.map(p => `  ${p.name} — ₹${p.price}`).join('\n'));
+    }
+
+    function testGetProduct() {
+      const p = window.RAY_STORE.getProduct('shoe-001');
+      showOutput(p ? `Product: ${p.name}\nPrice: ₹${p.price}\nCategory: ${p.category}` : 'Product not found');
+    }
+
+    function testAddToCart() {
+      window.RAY_STORE.addToCart('shoe-001', 1);
+      showOutput('Added shoe-001 to cart. Cart items: ' + window.RAY_STORE.getCartItems().length);
+    }
+
+    function testGetCart() {
+      const items = window.RAY_STORE.getCartItems();
+      if (items.length === 0) {
+        showOutput('Cart is empty.');
+      } else {
+        showOutput('Cart (' + items.length + ' items):\n' +
+          items.map(i => `  ${i.product.name} x${i.quantity} — ₹${i.product.price}`).join('\n'));
+      }
+    }
+
+    function testOpenRAY() {
+      const chat = document.getElementById('rayChat');
+      if (chat) {
+        chat.classList.add('open');
+        showOutput('RAY chat opened.');
+      } else {
+        showOutput('RAY chat element not found. Go to index.html to test.');
+      }
+    }
+
+    checkStatus();
+  </script>
+</body>
+</html>

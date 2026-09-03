@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOVO — Performance Essentials for Everyday Movement</title>
+  <meta name="description" content="NOVO is a modern fashion and lifestyle store selling running shoes, sneakers, jackets, watches, backpacks, and accessories. Performance essentials designed for everyday movement.">
+  <meta name="keywords" content="running shoes, sneakers, jackets, watches, backpacks, accessories, NOVO, fitness, fashion">
+  <link rel="canonical" href="https://novo-demo-store.example.com/">
+  <meta property="og:title" content="NOVO — Performance Essentials for Everyday Movement">
+  <meta property="og:description" content="Performance essentials designed for everyday movement.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://novo-demo-store.example.com/">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="NOVO Home">NOVO</a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#" data-nav="Men">Men</a>
+        <a href="#" data-nav="Women">Women</a>
+        <a href="index.html?category=Running+Shoes" data-nav="Shoes">Shoes</a>
+        <a href="index.html?category=Accessories" data-nav="Accessories">Accessories</a>
+        <a href="index.html?filter=new" data-nav="New Arrivals">New Arrivals</a>
+        <a href="index.html?filter=sale" data-nav="Sale">Sale</a>
+      </nav>
+      <div class="header-actions">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search products">
+          <button class="search-btn" aria-label="Search" id="searchBtn">🔍</button>
+        </div>
+        <button class="icon-btn" id="wishlistBtn" aria-label="Wishlist">♡</button>
+        <button class="icon-btn cart-btn" id="cartBtn" aria-label="Shopping cart">
+          🛒 <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="icon-btn" id="accountBtn" aria-label="Account">👤</button>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Hero banner">
+      <div class="hero-content">
+        <h1>Move Better.</h1>
+        <p>Performance essentials designed for everyday movement.</p>
+        <div class="hero-actions">
+          <a href="index.html?category=Running+Shoes" class="btn btn-primary">Shop Running</a>
+          <a href="index.html?category=Sneakers" class="btn btn-secondary">Explore Collection</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?w=900&h=500&fit=crop" alt="NOVO performance running shoes on urban background" loading="eager">
+      </div>
+    </section>
+
+    <section class="categories" aria-label="Shop by category">
+      <h2>Shop by Category</h2>
+      <div class="category-grid">
+        <a href="index.html?category=Running+Shoes" class="category-card">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Running shoes collection" loading="lazy">
+          <h3>Running Shoes</h3>
+        </a>
+        <a href="index.html?category=Sneakers" class="category-card">
+          <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop" alt="Sneakers collection" loading="lazy">
+          <h3>Sneakers</h3>
+        </a>
+        <a href="index.html?category=Jackets" class="category-card">
+          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop" alt="Jackets collection" loading="lazy">
+          <h3>Jackets</h3>
+        </a>
+        <a href="index.html?category=Watches" class="category-card">
+          <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop" alt="Watches collection" loading="lazy">
+          <h3>Watches</h3>
+        </a>
+      </div>
+    </section>
+
+    <section class="products-section" id="productsSection" aria-label="Product catalog">
+      <div class="products-header">
+        <h2 id="productsTitle">All Products</h2>
+        <div class="products-controls">
+          <select id="sortSelect" aria-label="Sort products">
+            <option value="default">Sort by: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="name">Name: A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-layout">
+        <aside class="filters-sidebar" id="filtersSidebar" aria-label="Product filters">
+          <div class="filter-group">
+            <h3>Category</h3>
+            <div id="categoryFilters"></div>
+          </div>
+          <div class="filter-group">
+            <h3>Price Range</h3>
+            <input type="range" id="priceFilter" min="0" max="16000" value="16000" aria-label="Max price">
+            <span id="priceFilterLabel">Up to ₹16,000</span>
+          </div>
+          <div class="filter-group">
+            <h3>Size</h3>
+            <div id="sizeFilters"></div>
+          </div>
+          <div class="filter-group">
+            <h3>Color</h3>
+            <div id="colorFilters"></div>
+          </div>
+          <button class="btn btn-clear-filters" id="clearFiltersBtn">Clear Filters</button>
+        </aside>
+
+        <div class="product-grid" id="productGrid" role="list" aria-label="Products">
+          <!-- Products rendered by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>NOVO</h4>
+        <p>Performance essentials designed for everyday movement.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="index.html?category=Running+Shoes">Running Shoes</a>
+        <a href="index.html?category=Sneakers">Sneakers</a>
+        <a href="index.html?category=Jackets">Jackets</a>
+        <a href="index.html?category=Watches">Watches</a>
+        <a href="index.html?category=Backpacks">Backpacks</a>
+        <a href="index.html?category=Accessories">Accessories</a>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <a href="#">Shipping & Returns</a>
+        <a href="#">Contact Us</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="#">Instagram</a>
+        <a href="#">Twitter</a>
+        <a href="#">Newsletter</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 NOVO. All rights reserved. Powered by RAY AI.</p>
+    </div>
+  </footer>
+
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+    <div class="cart-drawer-header">
+      <h3>Your Cart</h3>
+      <button class="cart-close-btn" id="cartCloseBtn" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter">
+      <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">₹0</span>
+      </div>
+      <button class="btn btn-primary btn-checkout" id="checkoutBtn">Checkout</button>
+    </div>
+  </aside>
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <div class="checkout-modal" id="checkoutModal" role="dialog" aria-label="Checkout">
+    <div class="checkout-content">
+      <div class="checkout-header">
+        <h3>Checkout</h3>
+        <button class="checkout-close-btn" id="checkoutCloseBtn" aria-label="Close checkout">✕</button>
+      </div>
+      <div class="checkout-body">
+        <div class="checkout-order-summary">
+          <h4>Order Summary</h4>
+          <div id="checkoutItems"></div>
+          <div class="checkout-total">
+            <span>Total</span>
+            <span id="checkoutTotal">₹0</span>
+          </div>
+        </div>
+        <form class="checkout-form" id="checkoutForm">
+          <h4>Shipping Details</h4>
+          <div class="form-group">
+            <label for="checkoutName">Full Name *</label>
+            <input type="text" id="checkoutName" required placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label for="checkoutEmail">Email *</label>
+            <input type="email" id="checkoutEmail" required placeholder="john@example.com">
+          </div>
+          <div class="form-group">
+            <label for="checkoutPhone">Phone *</label>
+            <input type="tel" id="checkoutPhone" required placeholder="+91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label for="checkoutAddress">Address *</label>
+            <textarea id="checkoutAddress" required placeholder="Street address, city, state, pincode"></textarea>
+          </div>
+          <!-- # ponytail: Razorpay test mode, swap key for production. Test card: 4111 1111 1111 1111, any future date, any CVV -->
+          <button type="submit" class="btn btn-primary btn-place-order">Pay with Razorpay</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-success" id="checkoutSuccess" role="dialog" aria-label="Order confirmed">
+    <div class="checkout-success-content">
+      <div class="success-icon">✓</div>
+      <h3>Order Placed!</h3>
+      <p>Thank you for your purchase. Your order <strong id="orderId"></strong> has been confirmed.</p>
+      <p class="success-email">A confirmation will be sent to <strong id="confirmEmail"></strong></p>
+      <button class="btn btn-primary" id="continueShoppingBtn">Continue Shopping</button>
+    </div>
+  </div>
+
+  <div class="ray-widget" id="rayWidget" role="complementary" aria-label="RAY AI shopping assistant">
+    <button class="ray-widget-btn" id="rayWidgetBtn" aria-label="Open RAY AI assistant">
+      <span class="ray-icon">✦</span> RAY AI
+    </button>
+    <div class="ray-chat" id="rayChat" role="dialog" aria-label="RAY AI chat">
+      <div class="ray-chat-header">
+        <h4><span class="ray-icon">✦</span> RAY AI</h4>
+        <button class="ray-close-btn" id="rayCloseBtn" aria-label="Close RAY chat">✕</button>
+      </div>
+      <div class="ray-chat-messages" id="rayMessages">
+        <div class="ray-msg ray-msg-ai">
+          <p>Need help finding something? Try asking:</p>
+          <p class="ray-suggestion">"I need a lightweight running shoe under ₹5,000."</p>
+        </div>
+      </div>
+      <div class="ray-chat-input">
+        <input type="text" id="rayInput" placeholder="Ask RAY..." aria-label="Ask RAY AI">
+        <button class="ray-send-btn" id="raySendBtn" aria-label="Send message">→</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const RAY_CONFIG = {
+      storeId: "novo-demo-store",
+      apiBaseUrl: "",
+      sdkUrl: "https://cdn.ray-ai.example.com/ray-sdk.js",
+      environment: "development"
+    };
+    // # ponytail: test key lives in frontend config, swap for env var in production
+    const RAZORPAY_CONFIG = {
+      key: "rzp_test_TTuulr99tlhG2e",
+      name: "NOVO Store",
+      description: "NOVO Order",
+      currency: "INR",
+      theme: { color: "#111111" }
+    };
+  </script>
+  <script src="products.js"></script>
+  <script src="services/product-service.js"></script>
+  <script src="services/cart-service.js"></script>
+  <script src="services/analytics-service.js"></script>
+  <script src="ray-integration.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

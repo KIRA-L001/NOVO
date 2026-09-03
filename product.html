@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — NOVO</title>
+  <meta name="description" content="NOVO product detail page.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="NOVO Home">NOVO</a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html">Men</a>
+        <a href="index.html">Women</a>
+        <a href="index.html?category=Running+Shoes">Shoes</a>
+        <a href="index.html?category=Accessories">Accessories</a>
+        <a href="index.html?filter=new">New Arrivals</a>
+        <a href="index.html?filter=sale">Sale</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn cart-btn" id="cartBtn" aria-label="Shopping cart">
+          🛒 <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a> / <span id="breadcrumbCategory"></span> / <span id="breadcrumbName"></span>
+    </div>
+
+    <section class="product-detail" id="productDetail" aria-label="Product details">
+      <div class="product-detail-image">
+        <img id="productImage" src="" alt="">
+      </div>
+      <div class="product-detail-info">
+        <p class="product-brand" id="productBrand"></p>
+        <h1 class="product-name" id="productName"></h1>
+        <p class="product-category" id="productCategory"></p>
+        <div class="product-rating" id="productRating"></div>
+        <p class="product-description" id="productDescription"></p>
+        <div class="product-pricing">
+          <span class="product-price" id="productPrice"></span>
+          <span class="product-original-price" id="productOriginalPrice"></span>
+          <span class="product-discount" id="productDiscount"></span>
+        </div>
+        <div class="product-options">
+          <div class="option-group" id="sizeOptions">
+            <label>Size</label>
+            <div class="option-buttons"></div>
+          </div>
+          <div class="option-group" id="colorOptions">
+            <label>Color</label>
+            <div class="option-buttons"></div>
+          </div>
+        </div>
+        <p class="product-stock" id="productStock"></p>
+        <div class="product-actions">
+          <button class="btn btn-primary btn-add-cart" id="addToCartBtn">Add to Cart</button>
+          <button class="btn btn-secondary btn-wishlist" id="wishlistBtn">♡</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="related-products" id="relatedProducts" aria-label="Related products">
+      <h2>You May Also Like</h2>
+      <div class="product-grid" id="relatedGrid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>&copy; 2026 NOVO. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="products.js"></script>
+  <script src="services/product-service.js"></script>
+  <script src="services/cart-service.js"></script>
+  <script src="services/analytics-service.js"></script>
+  <script src="ray-integration.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    const product = ProductService.getProduct(productId);
+
+    if (!product) {
+      document.getElementById('productDetail').innerHTML = '<p>Product not found.</p>';
+    } else {
+      document.title = product.name + ' — NOVO';
+      document.getElementById('breadcrumbCategory').textContent = product.category;
+      document.getElementById('breadcrumbName').textContent = product.name;
+      document.getElementById('productImage').src = product.image;
+      document.getElementById('productImage').alt = product.name;
+      document.getElementById('productBrand').textContent = product.brand;
+      document.getElementById('productName').textContent = product.name;
+      document.getElementById('productCategory').textContent = product.category;
+      document.getElementById('productDescription').textContent = product.description;
+      document.getElementById('productPrice').textContent = '₹' + product.price.toLocaleString();
+      document.getElementById('productOriginalPrice').textContent = '₹' + product.originalPrice.toLocaleString();
+      const discount = Math.round((1 - product.price / product.originalPrice) * 100);
+      document.getElementById('productDiscount').textContent = '-' + discount + '%';
+      document.getElementById('productStock').textContent = product.stock > 0 ? 'In Stock (' + product.stock + ' available)' : 'Out of Stock';
+
+      const ratingHTML = '★'.repeat(Math.floor(product.rating)) + ' ' + product.rating + ' (' + product.reviewCount + ' reviews)';
+      document.getElementById('productRating').innerHTML = ratingHTML;
+
+      const sizeButtons = document.querySelector('#sizeOptions .option-buttons');
+      product.sizes.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = s;
+        btn.dataset.value = s;
+        sizeButtons.appendChild(btn);
+      });
+
+      const colorButtons = document.querySelector('#colorOptions .option-buttons');
+      product.colors.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = c;
+        btn.dataset.value = c;
+        colorButtons.appendChild(btn);
+      });
+
+      document.getElementById('addToCartBtn').addEventListener('click', () => {
+        CartService.addItem(product.id, 1);
+        document.getElementById('cartCount').textContent = CartService.getItemCount();
+        alert(product.name + ' added to cart!');
+      });
+
+      // JSON-LD
+      const jsonLD = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": product.image,
+        "description": product.description,
+        "sku": product.id,
+        "brand": { "@type": "Brand", "name": product.brand },
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": product.currency,
+          "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": product.rating,
+          "reviewCount": product.reviewCount
+        }
+      };
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(jsonLD);
+      document.head.appendChild(script);
+
+      // Canonical
+      const canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      canonical.href = 'https://novo-demo-store.example.com/product.html?id=' + product.id;
+      document.head.appendChild(canonical);
+
+      // Related
+      const related = ProductService.getProductsByCategory(product.category).filter(p => p.id !== product.id);
+      const relatedGrid = document.getElementById('relatedGrid');
+      related.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'product-card';
+        card.dataset.productId = p.id;
+        card.innerHTML = `
+          <a href="product.html?id=${p.id}" class="product-image-link">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+          </a>
+          <div class="product-info">
+            <p class="product-brand">${p.brand}</p>
+            <h3 class="product-name"><a href="product.html?id=${p.id}">${p.name}</a></h3>
+            <span class="product-price">₹${p.price.toLocaleString()}</span>
+          </div>`;
+        relatedGrid.appendChild(card);
+      });
+
+      Analytics.track('product_viewed', { productId: product.id });
+    }
+
+    document.getElementById('cartCount').textContent = CartService.getItemCount();
+
+    document.addEventListener('error', e => {
+      if (e.target.tagName === 'IMG' && !e.target.dataset.fallback) {
+        e.target.dataset.fallback = '1';
+        const label = e.target.alt || 'Product';
+        e.target.src = 'data:image/svg+xml,' + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><rect fill="%23e5e5e5" width="600" height="600"/><text fill="%23999" font-family="sans-serif" font-size="24" x="50%" y="50%" text-anchor="middle" dy=".3em">' + label + '</text></svg>'
+        );
+      }
+    }, true);
+  </script>
+</body>
+</html>
